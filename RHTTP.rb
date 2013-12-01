@@ -29,7 +29,19 @@ def content_type(path)
 end
 
 def requested_file(request_line)
+  request_uri = request_line.split(" ")[1]
+  path = URI.unescape(URI(request_uri).path)
   
+  clean = []
+  
+  parts = path.split("/")
+  
+  parts.each do |part|
+    next if part.empty? || part == '.'
+    part == '..' ? clean.pop : clean << part
+  end
+  
+  File.join(WEB_ROOT, *clean)
 end
 
 loop do
@@ -41,6 +53,9 @@ loop do
   
     # Getting the path of the resource server is asked for
     path = requested_file(request)
+    
+    # Serving index.html as a default page
+    path = File.join(path, 'index.html') if File.directory?(path)
     
     # Checking if file exists and is not a directory
     if File.exists?(path) && !File.directory?(path)
