@@ -28,19 +28,24 @@ def content_type(path)
   CONTENT_TYPE.fetch(extension, DEFAULT_CONTENT_TYPE)
 end
 
+# Method for getting proper path to the file
 def requested_file(request_line)
+  # selecting path from the GET
   request_uri = request_line.split(" ")[1]
   path = URI.unescape(URI(request_uri).path)
   
   clean = []
   
+  # Spliting path into parts
   parts = path.split("/")
   
+  # For each part we are checking whether it isn't empty or .
   parts.each do |part|
     next if part.empty? || part == '.'
     part == '..' ? clean.pop : clean << part
   end
   
+  # Generating a path to the web page
   File.join(WEB_ROOT, *clean)
 end
 
