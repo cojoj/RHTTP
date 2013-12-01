@@ -1,8 +1,11 @@
 require 'socket'
 require 'uri'
 
+# Getting port from the frist argument
+port = ARGV.empty? ? 3000 : ARGV[0]
+
 # Initializing new local server on given port
-server = TCPServer.new 3000
+server = TCPServer.new port
 
 # Root directory for web server
 # Files from this dir will be reachable
